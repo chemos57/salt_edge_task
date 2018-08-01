@@ -1,0 +1,5 @@
+{
+  "name": "salt_edge_task",
+  "private": true,
+  "dependencies": {}
+}
