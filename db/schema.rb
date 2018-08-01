@@ -10,10 +10,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180801100145) do
+ActiveRecord::Schema.define(version: 20180801172202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "acc_id"
+    t.string "a_name"
+    t.string "nature"
+    t.string "balance"
+    t.string "currency_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "login_id"
+    t.index ["login_id"], name: "index_accounts_on_login_id"
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string "cust_id"
+    t.string "identifier"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_customers_on_user_id"
+  end
+
+  create_table "logins", force: :cascade do |t|
+    t.string "log_id"
+    t.string "provider_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "customer_id"
+    t.index ["customer_id"], name: "index_logins_on_customer_id"
+  end
+
+  create_table "transactions", force: :cascade do |t|
+    t.string "tr_id"
+    t.string "mode"
+    t.string "status"
+    t.string "amount"
+    t.string "curr_code"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_transactions_on_account_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false

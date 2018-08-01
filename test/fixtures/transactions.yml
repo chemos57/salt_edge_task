@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tr_id: MyString
+  mode: MyString
+  status: MyString
+  amount: MyString
+  curr_code: MyString
+  description: MyString
+
+two:
+  tr_id: MyString
+  mode: MyString
+  status: MyString
+  amount: MyString
+  curr_code: MyString
+  description: MyString
