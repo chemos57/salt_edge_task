@@ -1,9 +1,20 @@
 class LoginsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_login, only: [:show, :edit, :update, :destroy]
 
   # GET /logins
   # GET /logins.json
   def index
+    api = SaltEdge.new("Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4", "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg", "/home/vasia/salt_edge_task/private.pem")
+    r = api.simple_request("GET", "https://www.saltedge.com/api/v4/logins/")
+    cust_id = current_user.customers.first.cust_id
+    r["data"].each do |login|
+      if cust_id == login["customer_id"]
+        Login.where(provider_name: login["provider_name"]).first_or_create do |log|
+          log.log_id = login["id"]
+        end
+      end
+    end 
     @logins = Login.all
   end
 

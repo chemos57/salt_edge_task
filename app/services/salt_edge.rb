@@ -14,6 +14,26 @@ class SaltEdge
     @secret = secret
     @private_key = OpenSSL::PKey::RSA.new(File.open(private_pem_path))
   end
+  
+  def simple_request(method, url)
+    uri = URI.parse(url)
+    request = Net::HTTP::Get.new(uri)
+    request.content_type = "application/json"
+    request["Accept"] = "application/json"
+    request["App-Id"] = "Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4"
+    request["Secret"] = "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg"
+
+    req_options = {
+      use_ssl: uri.scheme == "https",
+    }   
+
+    response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+      http.request(request)
+    end
+
+    puts response.body
+    return JSON.parse(response.body)
+  end
 
   def request(method, url, options={})
     uri = URI.parse(url)
