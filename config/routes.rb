@@ -3,6 +3,6 @@ Rails.application.routes.draw do
     controllers: {registrations: "users/registrations"}
 
   resources :customers do
-    resources :logins, only: [:index, :show]
+    resources :logins, shallow: true
   end
 end
