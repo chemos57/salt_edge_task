@@ -10,6 +10,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
       customer.identifier = r["data"]["identifier"].to_s
       customer.user_id = resource.id
       customer.save
+      t = api.request("POST", "https://www.saltedge.com/api/v4/tokens/create", {cust_id: "" + r["data"]["id"].to_s + ""})
+      link = t["data"]["connect_url"]
+      puts t
+      puts link
+      redirect_to link and return
     end
   end
 end

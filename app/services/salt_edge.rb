@@ -7,6 +7,7 @@ require "uri"
 
 class SaltEdge
   attr_reader :app_id, :secret, :private_key
+  EXPIRATION_TIME = 60
 
   def initialize(app_id, secret, private_pem_path)
     @app_id = app_id
@@ -14,12 +15,19 @@ class SaltEdge
     @private_key = OpenSSL::PKey::RSA.new(File.open(private_pem_path))
   end
 
-  def request(method, url)
+  def request(method, url, options={})
     uri = URI.parse(url)
     request = Net::HTTP::Post.new(uri)
+    hash = {
+      method: method,
+      url: url,
+      expires_at: (Time.now + EXPIRATION_TIME).to_i,
+      params: as_json(options)
+    }
     request.content_type = "application/json"
     request["Accept"] = "application/json"
-    request["App-Id"] = app_id 
+    request["App-Id"] = app_id
+    request["Expires-at"] = hash[:expires_at] 
     request["Secret"] = secret
     id = url.split("/") 
     # if it's a customer we must add identifier to request
@@ -30,6 +38,18 @@ class SaltEdge
         }
       })
     end
+    if id.last == "create"
+      request.body = JSON.dump({
+        # for testing purpose that options has all necessary keys
+        "data" => {
+          "customer_id" => options[:cust_id],
+          "fetch_scopes" => [
+            "accounts",
+            "transactions"
+          ]
+        }
+      })
+    end 
 
     req_options = {
       use_ssl: uri.scheme == "https"
