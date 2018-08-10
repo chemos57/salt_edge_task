@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   resources :customers do
     resources :logins, shallow: true
   end
+  resources :accounts
 end

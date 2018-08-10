@@ -24,9 +24,21 @@ class LoginsController < ApplicationController
   def show
     api = SaltEdge.new("Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4", "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg", "/home/vasia/salt_edge_task/private.pem")
     id = params[:id]
+    cust_id = current_user.customers.first.cust_id
     l = Login.find(id)
-    r = api.simple_request("GET", "https://www.saltedge.com/api/v4/transactions?login_id=" + l.log_id)
-    puts r 
+    r = api.simple_request("GET", "https://www.saltedge.com/api/v4/accounts?customer_id=" + cust_id)
+    r["data"].each do |account|
+      if l.log_id == account["login_id"] 
+        Account.where(acc_id: account["id"]).first_or_create do |acc|
+          acc.a_name = account["name"]
+          acc.nature = account["nature"]
+          acc.balance = account["balance"]
+          acc.currency_code = account["currency_code"]
+          acc.login_id = l.id
+        end
+      end
+    end
+    @accounts = Account.where(login_id: l.id) 
   end
 
   # GET /logins/new

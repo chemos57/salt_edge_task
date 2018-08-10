@@ -1,4 +1,27 @@
 <p id="notice"><%= notice %></p>
 
+<h1>Accounts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="5"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @accounts.each do |account| %>
+      <tr>
+        <td><%= account.id %></td>
+        <td><%= account.a_name %></td>
+        <td><%= account.nature %></td>
+        <td><%= account.balance %></td>
+        <td><%= account.currency_code %></td>
+        <td><%= link_to 'Show', account %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
 <%= link_to 'Edit', edit_login_path(@login) %> |
 <%= link_to 'Back', login_path %>
