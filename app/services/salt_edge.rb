@@ -31,7 +31,7 @@ class SaltEdge
       http.request(request)
     end
 
-    puts response.body
+    #puts response.body
     return JSON.parse(response.body)
   end
 
@@ -78,7 +78,7 @@ class SaltEdge
     response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
       http.request(request)
     end
-    puts response.body
+    #puts response.body
     return JSON.parse(response.body)
   end
   

@@ -5,17 +5,6 @@ class LoginsController < ApplicationController
   # GET /logins
   # GET /logins.json
   def index
-    api = SaltEdge.new("Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4", "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg", "/home/vasia/salt_edge_task/private.pem")
-    r = api.simple_request("GET", "https://www.saltedge.com/api/v4/logins/")
-    cust_id = current_user.customers.first.cust_id
-    r["data"].each do |login|
-      if cust_id == login["customer_id"]
-        Login.where(provider_name: login["provider_name"]).first_or_create do |log|
-          log.log_id = login["id"]
-          log.customer_id = current_user.customers.first.id
-        end
-      end
-    end 
     @logins = Login.where(customer_id: current_user.customers.first.id)
   end
 
@@ -23,22 +12,20 @@ class LoginsController < ApplicationController
   # GET /logins/1.json
   def show
     api = SaltEdge.new("Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4", "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg", "/home/vasia/salt_edge_task/private.pem")
-    id = params[:id]
     cust_id = current_user.customers.first.cust_id
-    l = Login.find(id)
     r = api.simple_request("GET", "https://www.saltedge.com/api/v4/accounts?customer_id=" + cust_id)
     r["data"].each do |account|
-      if l.log_id == account["login_id"] 
+      if @login.log_id == account["login_id"] 
         Account.where(acc_id: account["id"]).first_or_create do |acc|
           acc.a_name = account["name"]
           acc.nature = account["nature"]
           acc.balance = account["balance"]
           acc.currency_code = account["currency_code"]
-          acc.login_id = l.id
+          acc.login_id = @login.id
         end
       end
     end
-    @accounts = Account.where(login_id: l.id) 
+    @accounts = Account.where(login_id: @login.id) 
   end
 
   # GET /logins/new
@@ -84,10 +71,7 @@ class LoginsController < ApplicationController
   # DELETE /logins/1.json
   def destroy
     @login.destroy
-    respond_to do |format|
-      format.html { redirect_to logins_url, notice: 'Login was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    redirect_to "https://www.saltedge.com/clients/logins?statuses=" and return
   end
 
   private

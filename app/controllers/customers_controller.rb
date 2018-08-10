@@ -5,12 +5,24 @@ class CustomersController < ApplicationController
   # GET /customers
   # GET /customers.json
   def index
-    @customers = Customer.all
+    @customers = Customer.where(user_id: current_user.id)
   end
 
   # GET /customers/1
   # GET /customers/1.json
   def show
+    api = SaltEdge.new("Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4", "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg", "/home/vasia/salt_edge_task/private.pem")
+    r = api.simple_request("GET", "https://www.saltedge.com/api/v4/logins/")
+    cust_id = current_user.customers.first.cust_id
+    r["data"].each do |login|
+      if cust_id == login["customer_id"]
+        Login.where(log_id: login["id"]).first_or_create do |log|
+          log.provider_name = login["provider_name"]
+          log.customer_id = current_user.customers.first.id
+        end
+      end
+    end 
+    @logins = @customer.logins
   end
 
   # GET /customers/new

@@ -7,4 +7,6 @@ Rails.application.routes.draw do
   end
   resources :accounts
   resources :transactions
+
+  root "customers#index" 
 end
