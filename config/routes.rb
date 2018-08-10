@@ -6,4 +6,5 @@ Rails.application.routes.draw do
     resources :logins, shallow: true
   end
   resources :accounts
+  resources :transactions
 end

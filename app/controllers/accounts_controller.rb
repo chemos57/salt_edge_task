@@ -1,4 +1,5 @@
 class AccountsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_account, only: [:show, :edit, :update, :destroy]
 
   # GET /accounts
@@ -10,6 +11,23 @@ class AccountsController < ApplicationController
   # GET /accounts/1
   # GET /accounts/1.json
   def show
+    api = SaltEdge.new("Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4", "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg", "/home/vasia/salt_edge_task/private.pem")
+    acc = Account.find(params[:id])
+    login_id = acc.login.log_id
+    account_id = acc.acc_id
+    r = api.simple_request("GET", "https://www.saltedge.com/api/v4/transactions?login_id=" + login_id)
+    r["data"].each do |account|
+      if account_id == account["account_id"]
+        Transaction.where(tr_id: account["id"]).first_or_create do |tr|
+          tr.mode = account["mode"]
+          tr.status = account["status"]
+          tr.amount = account["amount"]
+          tr.description = account["description"]
+          tr.account_id = acc.id
+        end
+      end
+    end
+    @transactions = Transaction.where(account_id: acc.id)
   end
 
   # GET /accounts/new
