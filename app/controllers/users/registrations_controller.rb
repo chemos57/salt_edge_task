@@ -18,6 +18,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
       puts t
       puts link
       redirect_to link and return
+      # after setting your provider you'll be redirected to pre-set page url in saltedge client's dashboard
+      # will have to re-login again to your app
     end
   end
 end
