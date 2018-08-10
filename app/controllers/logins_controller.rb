@@ -11,7 +11,7 @@ class LoginsController < ApplicationController
   # GET /logins/1
   # GET /logins/1.json
   def show
-    api = SaltEdge.new("Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4", "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg", "/home/vasia/salt_edge_task/private.pem")
+    api = SaltEdge.new(ENV["salt_edge_app_id"], ENV["salt_edge_secret"], "private.pem")
     cust_id = current_user.customers.first.cust_id
     r = api.simple_request("GET", "https://www.saltedge.com/api/v4/accounts?customer_id=" + cust_id)
     r["data"].each do |account|
@@ -71,6 +71,13 @@ class LoginsController < ApplicationController
   # DELETE /logins/1.json
   def destroy
     @login.destroy
+    # on login destroy it firstly deletes the db record and then redirects user
+    # to saltedge client dashboard where he can perform all of his needed functions
+    # whether it'll be reconnect/refresh/delete
+    # if he refuses to delete login, the deleted record will be recreated on users next
+    # access to customers show page
+    # for sake of simplicity i've impleneted this action to show
+    # the development choice made for implementing this action
     redirect_to "https://www.saltedge.com/clients/logins?statuses=" and return
   end
 

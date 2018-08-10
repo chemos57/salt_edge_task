@@ -11,7 +11,9 @@ class AccountsController < ApplicationController
   # GET /accounts/1
   # GET /accounts/1.json
   def show
-    api = SaltEdge.new("Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4", "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg", "/home/vasia/salt_edge_task/private.pem")
+     # while accesing an account a user we'll be able to see the page with transactions no matter whether 
+    # it's pending or not
+    api = SaltEdge.new(ENV["salt_edge_app_id"], ENV["salt_edge_secret"], "private.pem")
     login_id = @account.login.log_id
     account_id = @account.acc_id
     r = api.simple_request("GET", "https://www.saltedge.com/api/v4/transactions?login_id=" + login_id)

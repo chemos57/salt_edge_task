@@ -12,16 +12,19 @@ class SaltEdge
   def initialize(app_id, secret, private_pem_path)
     @app_id = app_id
     @secret = secret
-    @private_key = OpenSSL::PKey::RSA.new(File.open(private_pem_path))
+    file_path = Rails.root + private_pem_path
+    @private_key = OpenSSL::PKey::RSA.new(File.open(file_path))
   end
-  
+  # inspired from https://github.com/saltedge/saltedge-examples/tree/master/ruby
+  # i know you can imply to me an DRY violation
+  # which i've accepted to do being restricted in free time but still willing to do test task 
   def simple_request(method, url)
     uri = URI.parse(url)
     request = Net::HTTP::Get.new(uri)
     request.content_type = "application/json"
     request["Accept"] = "application/json"
-    request["App-Id"] = "Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4"
-    request["Secret"] = "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg"
+    request["App-Id"] = ENV["salt_edge_app_id"]
+    request["Secret"] = ENV["salt_edge_secret"]
 
     req_options = {
       use_ssl: uri.scheme == "https",

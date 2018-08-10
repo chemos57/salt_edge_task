@@ -11,7 +11,9 @@ class CustomersController < ApplicationController
   # GET /customers/1
   # GET /customers/1.json
   def show
-    api = SaltEdge.new("Wn97rBNJDxivIE3T3oLhDOr7qAhJytd63EGqDykHcl4", "ErynyWOwLeB9IQA6YPWLYOnnbPoW88DxRkks9OXWzkg", "/home/vasia/salt_edge_task/private.pem")
+    # while accesing a customer a user we'll be able to see the page with logins associated to 
+    # that concrete customer
+    api = SaltEdge.new(ENV["salt_edge_app_id"], ENV["salt_edge_secret"], "private.pem")
     r = api.simple_request("GET", "https://www.saltedge.com/api/v4/logins/")
     cust_id = current_user.customers.first.cust_id
     r["data"].each do |login|

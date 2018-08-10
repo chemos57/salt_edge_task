@@ -1,24 +1,22 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This an implementation of Salt Edge test task
 
-Things you may want to cover:
+In order to run locally this app, you can simply clone it from this github repo.
+You might need to generate a public/private RSA key pair which you can do following:
+openssl genrsa -out private.pem 2048
+openssl rsa -pubout -in private.pem -out public.pem
 
-* Ruby version
+and then replace the existing files, which i've added to the repo. Obviously you must have 
+an Salt Edge account to use your app and secret keys.
 
-* System dependencies
+Then run `bundle install`
 
-* Configuration
+After that run `bundle exec figaro install` and put into your config/application.yml file 
+your API credentials in that manner
+salt_edge_app_id : 
+salt_edge_secret: 
 
-* Database creation
+After that your app will be operational and ready to test
+Good testing...)
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...

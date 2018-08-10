@@ -35,6 +35,8 @@ gem 'devise'
 gem 'openssl'
 # Use rest client for api calls
 gem 'rest-client'
+# Use figaro gem to manage API keys
+gem 'figaro'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
